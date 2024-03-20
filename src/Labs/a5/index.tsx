@@ -12,9 +12,3 @@ function Assignment5() {
   }
 export default Assignment5;
   
-  
-ISSUE:
-return right.find(list.add(true))
-
-Solution:
-
