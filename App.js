@@ -8,7 +8,7 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-
+Hello(app)
 CourseRoutes(app)
 ModuleRoutes(app)
 Lab5(app)
