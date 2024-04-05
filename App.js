@@ -13,7 +13,7 @@ const CONNECTION_STRING = process.env.DB_CONNECTION_STRING || "mongodb://127.0.0
 mongoose.connect(CONNECTION_STRING);
 
 console.log(`So we are connecting to:${CONNECTION_STRING}`)
-console.log(`Just making sure the environment is right(FRONTEND_URL):${FRONTEND_URL}`)
+console.log(`Just making sure the environment is right(FRONTEND_URL):${process.env.FRONTEND_URL}`)
 
 
 const app = express()
