@@ -9,8 +9,7 @@ import ModuleRoutes from "./Kanbas/modules/routes.js";
 import mongoose from "mongoose";
 import UserRoutes from "./Users/routes.js";
 
-// const CONNECTION_STRING = process.env.DB_CONNECTION_STRING || 'mongodb://127.0.0.1:27017/kanbas'
-const CONNECTION_STRING = 'mongodb+srv://a382259104:lyf030920@cluster0.llb0n7s.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
+const CONNECTION_STRING = process.env.DB_CONNECTION_STRING || 'mongodb://127.0.0.1:27017/kanbas'
 mongoose.connect(CONNECTION_STRING);
 
 
@@ -39,10 +38,11 @@ app.use(session(sessionOptions));
 
 app.use(express.json())
 
-UserRoutes(app)
-Hello(app)
 CourseRoutes(app)
 ModuleRoutes(app)
+UserRoutes(app)
+Hello(app)
+
 Lab5(app)
 
 
