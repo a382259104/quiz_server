@@ -12,6 +12,9 @@ import UserRoutes from "./Users/routes.js";
 const CONNECTION_STRING = process.env.DB_CONNECTION_STRING || "mongodb://127.0.0.1:27017/kanbas"
 mongoose.connect(CONNECTION_STRING);
 
+console.log(`So we are connecting to:${CONNECTION_STRING}`)
+console.log(`Just making sure the environment is right(FRONTEND_URL):${FRONTEND_URL}`)
+
 
 const app = express()
 app.use(cors({
@@ -34,8 +37,6 @@ if (process.env.NODE_ENV !== "development") {
 }
 
 app.use(session(sessionOptions));
-
-
 app.use(express.json())
 
 CourseRoutes(app)
