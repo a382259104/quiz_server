@@ -13,6 +13,7 @@ export default function UserRoutes(app) {
 
    };
   const findAllUsers = async (req, res) => {
+    console.log("Server attempting get all users")
     const users = await dao.findAllUsers();
     res.json(users);
   };
