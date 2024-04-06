@@ -14,6 +14,7 @@ mongoose.connect(CONNECTION_STRING);
 
 console.log(`So we are connecting to:${CONNECTION_STRING}`)
 console.log(`Just making sure the environment is right(FRONTEND_URL):${process.env.FRONTEND_URL}`)
+console.log(`Ready code:${mongoose.connection.readyState}`)
 
 
 const app = express()
