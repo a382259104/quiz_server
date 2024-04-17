@@ -9,11 +9,13 @@ import ModuleRoutes from "./Kanbas/modules/routes.js";
 import mongoose from "mongoose";
 import UserRoutes from "./Users/routes.js";
 
+
+
 const CONNECTION_STRING = `${process.env.DB_CONNECTION_STRING}/kanbas` || "mongodb://127.0.0.1:27017/kanbas"
 mongoose.connect(CONNECTION_STRING);
 
-console.log(`So we are connecting to:${CONNECTION_STRING}`)
-console.log(`Just making sure the environment is right(FRONTEND_URL):${process.env.FRONTEND_URL}`)
+console.log(`Mongo Connection String:${CONNECTION_STRING}`)
+console.log(`Frontend URL:${process.env.FRONTEND_URL}`)
 
 // Event listener for successful connection
 mongoose.connection.on('connected', () => {
