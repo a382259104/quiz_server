@@ -10,10 +10,26 @@ export default function QuizRoutes(app) {
     };
 
     const findQuizByCourse = async (req, res) => {
-        console.log("Server attempting to get quiz by ID");
+        console.log("Server attempting to get quiz by course");
         const course = req.params.course;
         try {
             const quiz = await Quiz.find({ course: course });
+            if (quiz) {
+                res.json(quiz);
+            } else {
+                res.status(404).json({ message: "Quiz not found" });
+            }
+        } catch (error) {
+            console.error("Error finding quiz:", error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    };
+
+    const findQuizById = async (req, res) => {
+        console.log("Server attempting to get quiz by ID");
+        const quiz = await Quiz.findById(quizId);
+        try {
+            const quiz = await Quiz.find({ _id: quizId });
             if (quiz) {
                 res.json(quiz);
             } else {
@@ -73,6 +89,7 @@ export default function QuizRoutes(app) {
 
     app.get("/api/quizzes", findAllQuizzes);
     app.get("/api/quizzes/:course", findQuizByCourse);
+    app.get("/api/quizzes/findquiz/:quizId", findQuizById);
     app.post("/api/quizzes", createQuiz);
     app.put("/api/quizzes/:quizId", updateQuiz);
     app.delete("/api/quizzes/:quizId", deleteQuiz);
