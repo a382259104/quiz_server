@@ -9,11 +9,11 @@ export default function QuizRoutes(app) {
         res.json(quizzes);
     };
 
-    const findQuizById = async (req, res) => {
+    const findQuizByCourse = async (req, res) => {
         console.log("Server attempting to get quiz by ID");
-        const quizId = req.params.quizId;
+        const course = req.params.course;
         try {
-            const quiz = await Quiz.findById(quizId);
+            const quiz = await Quiz.find({ course: course });
             if (quiz) {
                 res.json(quiz);
             } else {
@@ -72,7 +72,7 @@ export default function QuizRoutes(app) {
     };
 
     app.get("/api/quizzes", findAllQuizzes);
-    app.get("/api/quizzes/:quizId", findQuizById);
+    app.get("/api/quizzes/:course", findQuizByCourse);
     app.post("/api/quizzes", createQuiz);
     app.put("/api/quizzes/:quizId", updateQuiz);
     app.delete("/api/quizzes/:quizId", deleteQuiz);
