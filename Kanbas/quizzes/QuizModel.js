@@ -1,8 +1,22 @@
 import mongoose from "mongoose";
 
+const questionSchema = new mongoose.Schema({
+    type: { type: String, required: true, enum: ["MultipleChoice", "TrueFalse", "FillInTheBlanks"] },
+    title: { type: String, required: true },
+    points: { type: Number, required: true, default: 0 },
+    question: { type: String, required: true },
+    choices: [{ type: String }],
+    correctChoiceIndex: { type: Number },
+    correctAnswer: { type: Boolean },
+    blanks: [{
+        text: { type: String },
+        correctAnswer: { type: String }
+    }]
+}, { collection: "questions" });
+
 const quizSchema = new mongoose.Schema({
     title: { type: String, required: true },
-    description: { type: String }, 
+    description: { type: String },
     assignedto: { type: String },
     quizType: { type: String, enum: ["Graded Quiz", "Practice Quiz", "Graded Survey", "Ungraded Survey"], default: "Graded Quiz" },
     points: { type: Number, default: 0 },
@@ -17,7 +31,9 @@ const quizSchema = new mongoose.Schema({
     lockQuestionsAfterAnswering: { type: String, enum: ["No", "Yes"], default: "No" },
     dueDate: { type: Date },
     availableDate: { type: Date },
-    untilDate: { type: Date }
+    untilDate: { type: Date },
+    questions: [questionSchema],
+    course: { type: String, required: true }
 },
     { collection: "quizzes" });
 

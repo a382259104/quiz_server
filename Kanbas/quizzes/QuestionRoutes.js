@@ -1,10 +1,14 @@
-import Question from "./QuestionModel.js";
+import Quiz from "./QuizModel.js"
 
 const findAllQuestions = async (req, res) => {
-    console.log("Server attempting to get all questions");
+    console.log("Server attempting to get all questions for a quiz");
+    const quizId = req.params.quizId;
     try {
-        const questions = await Question.find();
-        res.json(questions);
+        const quiz = await Quiz.findById(quizId);
+        if (!quiz) {
+            return res.status(404).json({ message: "Quiz not found" });
+        }
+        res.json(quiz.questions);
     } catch (error) {
         console.error("Error finding questions:", error);
         res.status(500).json({ message: "Internal server error" });
@@ -12,28 +16,36 @@ const findAllQuestions = async (req, res) => {
 };
 
 const findQuestionById = async (req, res) => {
-    console.log("Server attempting to get question by ID");
-    const questionId = req.params.questionId;
+    console.log("Server attempting to get a question by ID for a quiz");
+    const { quizId, questionId } = req.params;
     try {
-        const question = await Question.findById(questionId);
-        if (question) {
-            res.json(question);
-        } else {
-            res.status(404).json({ message: "Question not found" });
+        const quiz = await Quiz.findById(quizId);
+        if (!quiz) {
+            return res.status(404).json({ message: "Quiz not found" });
         }
+        const question = quiz.questions.id(questionId);
+        if (!question) {
+            return res.status(404).json({ message: "Question not found" });
+        }
+        res.json(question);
     } catch (error) {
         console.error("Error finding question:", error);
         res.status(500).json({ message: "Internal server error" });
     }
-};
+}
 
 const createQuestion = async (req, res) => {
     console.log("Server attempting to create question");
+    const quizId = req.params.quizId;
     const questionData = req.body;
-    delete questionData._id;
     try {
-        const newQuestion = await Question.create(questionData);
-        res.status(201).json(newQuestion);
+        const quiz = await Quiz.findById(quizId);
+        if (!quiz) {
+            return res.status(404).json({ message: "Quiz not found" });
+        }
+        quiz.questions.push(questionData);
+        await quiz.save();
+        res.status(201).json(questionData);
     } catch (error) {
         console.error("Error creating question:", error);
         res.status(400).json({ message: "Invalid request" });
@@ -41,16 +53,21 @@ const createQuestion = async (req, res) => {
 };
 
 const updateQuestion = async (req, res) => {
-    console.log("Server attempting to update question");
-    const questionId = req.params.questionId;
+    console.log("Server attempting to update a question for a quiz");
+    const { quizId, questionId } = req.params;
     const questionData = req.body;
     try {
-        const updatedQuestion = await Question.findByIdAndUpdate(questionId, questionData, { new: true });
-        if (updatedQuestion) {
-            res.json(updatedQuestion);
-        } else {
-            res.status(404).json({ message: "Question not found" });
+        const quiz = await Quiz.findById(quizId);
+        if (!quiz) {
+            return res.status(404).json({ message: "Quiz not found" });
         }
+        const question = quiz.questions.id(questionId);
+        if (!question) {
+            return res.status(404).json({ message: "Question not found" });
+        }
+        Object.assign(question, questionData);
+        await quiz.save();
+        res.json(question);
     } catch (error) {
         console.error("Error updating question:", error);
         res.status(400).json({ message: "Invalid request" });
@@ -58,15 +75,20 @@ const updateQuestion = async (req, res) => {
 };
 
 const deleteQuestion = async (req, res) => {
-    console.log("Server attempting to delete question");
-    const questionId = req.params.questionId;
+    console.log("Server attempting to delete a question for a quiz");
+    const { quizId, questionId } = req.params;
     try {
-        const deletedQuestion = await Question.findByIdAndDelete(questionId);
-        if (deletedQuestion) {
-            res.json({ message: "Question deleted successfully" });
-        } else {
-            res.status(404).json({ message: "Question not found" });
+        const quiz = await Quiz.findById(quizId);
+        if (!quiz) {
+            return res.status(404).json({ message: "Quiz not found" });
         }
+        const question = quiz.questions.id(questionId);
+        if (!question) {
+            return res.status(404).json({ message: "Question not found" });
+        }
+        question.remove();
+        await quiz.save();
+        res.json({ message: "Question deleted successfully" });
     } catch (error) {
         console.error("Error deleting question:", error);
         res.status(500).json({ message: "Internal server error" });
@@ -74,11 +96,11 @@ const deleteQuestion = async (req, res) => {
 };
 
 function QuestionRoutes(app) {
-    app.get("/api/questions", findAllQuestions);
-    app.get("/api/questions/:questionId", findQuestionById);
-    app.post("/api/questions", createQuestion);
-    app.put("/api/questions/:questionId", updateQuestion);
-    app.delete("/api/questions/:questionId", deleteQuestion);
+    app.get("/api/quizzes/:quizId/questions", findAllQuestions);
+    app.get("/api/quizzes/:quizId/questions/:questionId", findQuestionById);
+    app.post("/api/quizzes/:quizId/questions", createQuestion);
+    app.put("/api/quizzes/:quizId/questions/:questionId", updateQuestion);
+    app.delete("/api/quizzes/:quizId/questions/:questionId", deleteQuestion);
 }
 
 export default QuestionRoutes;

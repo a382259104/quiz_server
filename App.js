@@ -11,8 +11,6 @@ import UserRoutes from "./Users/routes.js";
 import QuizRoutes from "./Kanbas/quizzes/QuizRoutes.js";
 import QuestionRoutes from "./Kanbas/quizzes/QuestionRoutes.js";
 
-
-
 const CONNECTION_STRING = `${process.env.DB_CONNECTION_STRING}/kanbas` || "mongodb://127.0.0.1:27017/kanbas"
 mongoose.connect(CONNECTION_STRING);
 
