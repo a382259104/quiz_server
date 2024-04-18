@@ -30,6 +30,7 @@ const findQuestionById = async (req, res) => {
 const createQuestion = async (req, res) => {
     console.log("Server attempting to create question");
     const questionData = req.body;
+    delete questionData._id;
     try {
         const newQuestion = await Question.create(questionData);
         res.status(201).json(newQuestion);
