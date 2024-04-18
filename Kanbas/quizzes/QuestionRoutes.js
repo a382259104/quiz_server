@@ -1,10 +1,10 @@
 import Quiz from "./QuizModel.js"
 
 const findAllQuestions = async (req, res) => {
-    console.log("Server attempting to get all questions for a quiz");
+    console.log(`Server attempting to get all questions for a quiz for ${req.params.quizId}`);
     const quizId = req.params.quizId;
     try {
-        const quiz = await Quiz.findById(quizId);
+        const quiz = await Quiz.findOne({ course: quizId });
         if (!quiz) {
             return res.status(404).json({ message: "Quiz not found" });
         }
@@ -19,7 +19,7 @@ const findQuestionById = async (req, res) => {
     console.log("Server attempting to get a question by ID for a quiz");
     const { quizId, questionId } = req.params;
     try {
-        const quiz = await Quiz.findById(quizId);
+        const quiz = await Quiz.findOne({ course: quizId });
         if (!quiz) {
             return res.status(404).json({ message: "Quiz not found" });
         }
@@ -38,8 +38,9 @@ const createQuestion = async (req, res) => {
     console.log("Server attempting to create question");
     const quizId = req.params.quizId;
     const questionData = req.body;
+    delete questionData._id;
     try {
-        const quiz = await Quiz.findById(quizId);
+        const quiz = await Quiz.findOne({ course: quizId });
         if (!quiz) {
             return res.status(404).json({ message: "Quiz not found" });
         }
@@ -57,7 +58,7 @@ const updateQuestion = async (req, res) => {
     const { quizId, questionId } = req.params;
     const questionData = req.body;
     try {
-        const quiz = await Quiz.findById(quizId);
+        const quiz = await Quiz.findOne({ course: quizId });
         if (!quiz) {
             return res.status(404).json({ message: "Quiz not found" });
         }
@@ -78,22 +79,21 @@ const deleteQuestion = async (req, res) => {
     console.log("Server attempting to delete a question for a quiz");
     const { quizId, questionId } = req.params;
     try {
-        const quiz = await Quiz.findById(quizId);
-        if (!quiz) {
-            return res.status(404).json({ message: "Quiz not found" });
-        }
-        const question = quiz.questions.id(questionId);
-        if (!question) {
-            return res.status(404).json({ message: "Question not found" });
-        }
-        question.remove();
-        await quiz.save();
-        res.json({ message: "Question deleted successfully" });
+      const quiz = await Quiz.findOneAndUpdate(
+        { course: quizId },
+        { $pull: { questions: { _id: questionId } } },
+        { new: true }
+      );
+      if (!quiz) {
+        return res.status(404).json({ message: "Quiz not found" });
+      }
+      res.json({ message: "Question deleted successfully" });
     } catch (error) {
-        console.error("Error deleting question:", error);
-        res.status(500).json({ message: "Internal server error" });
+      console.error("Error deleting question:", error);
+      res.status(500).json({ message: "Internal server error" });
     }
-};
+  };
+
 
 function QuestionRoutes(app) {
     app.get("/api/quizzes/:quizId/questions", findAllQuestions);
