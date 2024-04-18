@@ -1,4 +1,4 @@
-import Question from "./QuestionModel";
+import Question from "./QuestionModel.js";
 
 const findAllQuestions = async (req, res) => {
     console.log("Server attempting to get all questions");

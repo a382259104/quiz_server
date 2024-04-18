@@ -8,6 +8,8 @@ import CourseRoutes from "./Kanbas/courses/routes.js";
 import ModuleRoutes from "./Kanbas/modules/routes.js";
 import mongoose from "mongoose";
 import UserRoutes from "./Users/routes.js";
+import QuizRoutes from "./Kanbas/quizzes/QuizRoutes.js";
+import QuestionRoutes from "./Kanbas/quizzes/QuestionRoutes.js";
 
 
 
@@ -60,6 +62,9 @@ CourseRoutes(app)
 ModuleRoutes(app)
 UserRoutes(app)
 Hello(app)
+
+QuizRoutes(app)
+QuestionRoutes(app)
 
 Lab5(app)
 
