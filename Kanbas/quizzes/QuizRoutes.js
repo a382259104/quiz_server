@@ -27,11 +27,15 @@ export default function QuizRoutes(app) {
 
     const findQuizById = async (req, res) => {
         console.log("Server attempting to get quiz by ID");
-        const quiz = await Quiz.findById(quizId);
+        console.log(`This is the entire input ${req.body}`)
+
+
+        
+        const quizId = req.params.quizId;
         try {
-            const quiz = await Quiz.find({ _id: quizId });
-            if (quiz) {
-                res.json(quiz);
+            const foundQuiz = await Quiz.find({ _id: quizId });
+            if (foundQuiz) {
+                res.json(foundQuiz);
             } else {
                 res.status(404).json({ message: "Quiz not found" });
             }
