@@ -32,7 +32,7 @@ export default function QuizRoutes(app) {
         const quizId = req.params.quizId;
 
         try {
-            const foundQuiz = await Quiz.find({ _id: quizId });
+            const foundQuiz = await Quiz.findOne({ _id: quizId });
             if (foundQuiz) {
                 console.log(foundQuiz)
                 res.json(foundQuiz);
