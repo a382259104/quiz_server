@@ -3,8 +3,9 @@ import Quiz from "./QuizModel.js"
 const findAllQuestions = async (req, res) => {
     console.log(`Server attempting to get all questions for a quiz for ${req.params.quizId}`);
     const quizId = req.params.quizId;
+
     try {
-        const quiz = await Quiz.findOne({ course: quizId });
+        const quiz = await Quiz.findOne({ _id: quizId });
         if (!quiz) {
             return res.status(404).json({ message: "Quiz not found" });
         }
@@ -15,32 +16,13 @@ const findAllQuestions = async (req, res) => {
     }
 };
 
-const findQuestionById = async (req, res) => {
-    console.log("Server attempting to get a question by ID for a quiz");
-    const { quizId, questionId } = req.params;
-    try {
-        const quiz = await Quiz.findOne({ course: quizId });
-        if (!quiz) {
-            return res.status(404).json({ message: "Quiz not found" });
-        }
-        const question = quiz.questions.id(questionId);
-        if (!question) {
-            return res.status(404).json({ message: "Question not found" });
-        }
-        res.json(question);
-    } catch (error) {
-        console.error("Error finding question:", error);
-        res.status(500).json({ message: "Internal server error" });
-    }
-}
-
 const createQuestion = async (req, res) => {
     console.log("Server attempting to create question");
     const quizId = req.params.quizId;
     const questionData = req.body;
     delete questionData._id;
     try {
-        const quiz = await Quiz.findOne({ course: quizId });
+        const quiz = await Quiz.findOne({ _id: quizId });
         if (!quiz) {
             return res.status(404).json({ message: "Quiz not found" });
         }
@@ -58,13 +40,16 @@ const updateQuestion = async (req, res) => {
     const { quizId, questionId } = req.params;
     const questionData = req.body;
     try {
-        const quiz = await Quiz.findOne({ course: quizId });
+        const quiz = await Quiz.findOne({ _id: quizId });
         if (!quiz) {
             return res.status(404).json({ message: "Quiz not found" });
         }
-        const question = quiz.questions.id(questionId);
+
+        console.log(`This is the question id ${questionId}`)
+        // const question = quiz.questions.id(questionId);
+        const question = quiz.questions.find(q => q._id.toString() === questionId);
         if (!question) {
-            return res.status(404).json({ message: "Question not found" });
+            return res.status(404).json({ message: "Question not found?" });
         }
         Object.assign(question, questionData);
         await quiz.save();
@@ -79,8 +64,8 @@ const deleteQuestion = async (req, res) => {
     console.log("Server attempting to delete a question for a quiz");
     const { quizId, questionId } = req.params;
     try {
-      const quiz = await Quiz.findOneAndUpdate(
-        { course: quizId },
+      const quiz = await Quiz.findByIdAndUpdate(
+        quizId,
         { $pull: { questions: { _id: questionId } } },
         { new: true }
       );

@@ -26,9 +26,6 @@ export default function QuizRoutes(app) {
     };
 
     const findQuizById = async (req, res) => {
-        console.log("Server attempting to get quiz by ID------");
-        console.log(`This is ?id? ${req.params.quizId}`)
-
         const quizId = req.params.quizId;
 
         try {
