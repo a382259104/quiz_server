@@ -20,7 +20,7 @@ const createQuestion = async (req, res) => {
     console.log("Server attempting to create question");
     const quizId = req.params.quizId;
     const questionData = req.body;
-    delete questionData._id;
+    console.log(`this is the question id: ${questionData._id}`)
     try {
         const quiz = await Quiz.findOne({ _id: quizId });
         if (!quiz) {
@@ -63,6 +63,7 @@ const updateQuestion = async (req, res) => {
 const deleteQuestion = async (req, res) => {
     console.log("Server attempting to delete a question for a quiz");
     const { quizId, questionId } = req.params;
+    console.log(`The two parameters:${quizId}, ${questionId}`)
     try {
       const quiz = await Quiz.findByIdAndUpdate(
         quizId,
@@ -82,7 +83,6 @@ const deleteQuestion = async (req, res) => {
 
 function QuestionRoutes(app) {
     app.get("/api/quizzes/:quizId/questions", findAllQuestions);
-    app.get("/api/quizzes/:quizId/questions/:questionId", findQuestionById);
     app.post("/api/quizzes/:quizId/questions", createQuestion);
     app.put("/api/quizzes/:quizId/questions/:questionId", updateQuestion);
     app.delete("/api/quizzes/:quizId/questions/:questionId", deleteQuestion);
