@@ -49,7 +49,7 @@ const updateQuestion = async (req, res) => {
         // const question = quiz.questions.id(questionId);
         const question = quiz.questions.find(q => q._id.toString() === questionId);
         if (!question) {
-            return res.status(404).json({ message: "Question not found?" });
+            return res.status(404).json({ message: "Question not found" });
         }
         Object.assign(question, questionData);
         await quiz.save();
